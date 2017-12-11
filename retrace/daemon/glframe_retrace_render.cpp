@@ -459,3 +459,48 @@ RetraceRender::setState(const StateKey &item,
                         const std::string &value) {
   m_state_override->setState(item, offset, value);
 }
+
+void
+RetraceRender::queryIndices(const trace::Call *draw,
+                            SelectionId selId,
+                            ExperimentId experimentCount,
+                            RenderId renderId,
+                            OnFrameRetrace *callback) const {
+  if (strncmp(draw->sig->name,
+              "glDrawElements",
+              strlen("glDrawElements")) != 0)
+    return;
+  GLint binding;
+  GlFunctions::GetIntegerv(GL_ELEMENT_ARRAY_BUFFER_BINDING, &binding);
+  if (!binding)
+    return;
+  GLint size;
+  GlFunctions::GetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER,
+                                    GL_BUFFER_SIZE, &size);
+  const int mode = draw->args[0].value->toSInt();
+  if (mode !=  GL_TRIANGLES)
+    // HACK
+    return;
+
+  const int count = draw->args[1].value->toSInt();
+  const int type = draw->args[2].value->toSInt();
+  if (type != GL_UNSIGNED_SHORT)
+    // HACK
+    return;
+
+  const int offset = draw->args[3].value->toSInt();
+  const void *data = GlFunctions::MapBufferRange(GL_ELEMENT_ARRAY_BUFFER,
+                              offset,
+                              count * 2 * 3,
+                              GL_MAP_READ_BIT);
+  if (!data)
+    return;
+
+  std::vector<uint32_t> indices(count * 3);
+  const uint16_t* data_16 = reinterpret_cast<const uint16_t*>(data);
+  for (int i = 0; i < count * 3; ++i)
+    indices[i] = data_16[i];
+
+  callback->onIndices(selId, experimentCount, renderId, indices);
+  GlFunctions::UnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
+}

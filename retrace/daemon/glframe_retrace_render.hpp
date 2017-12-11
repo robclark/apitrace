@@ -105,6 +105,11 @@ class RetraceRender {
                ExperimentId experimentCount,
                RenderId renderId,
                OnFrameRetrace *callback) const;
+  void queryIndices(const trace::Call *draw,
+                    SelectionId selId,
+                    ExperimentId experimentCount,
+                    RenderId renderId,
+                    OnFrameRetrace *callback) const;
 
   trace::AbstractParser *m_parser;
   retrace::Retracer *m_retracer;
