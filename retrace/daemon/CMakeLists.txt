@@ -57,6 +57,8 @@ set (RETRACE_SOURCES
   glframe_os.hpp
   glframe_logger.cpp
   glframe_logger.hpp
+  glframe_mesh_optimize.cpp
+  glframe_mesh_optimize.hpp
   glframe_perf_enabled.hpp
   glframe_retrace.cpp
   glframe_retrace.hpp
@@ -108,6 +110,7 @@ if (Qt5Widgets_FOUND)
   add_subdirectory (ui)
   add_subdirectory (bargraph)
 endif ()
+  add_subdirectory (test)
 if (ENABLE_WAFFLE AND Qt5Widgets_FOUND)
   add_subdirectory (test)
 endif ()

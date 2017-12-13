@@ -17,6 +17,7 @@ set (DAEMON_TEST_SRC
   retrace_daemon_test.cpp
   retrace_file_transfer_test.cpp
   retrace_log_test.cpp
+  retrace_mesh_test.cpp
   retrace_socket_test.cpp
   retrace_thread_test.cpp
   main_test.cpp

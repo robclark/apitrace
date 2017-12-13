@@ -501,6 +501,6 @@ RetraceRender::queryIndices(const trace::Call *draw,
   for (int i = 0; i < count * 3; ++i)
     indices[i] = data_16[i];
 
-  callback->onIndices(selId, experimentCount, renderId, indices);
+  // callback->onIndices(selId, experimentCount, renderId, indices);
   GlFunctions::UnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 }
