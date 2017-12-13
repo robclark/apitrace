@@ -56,7 +56,7 @@ target_link_libraries(retrace_bargraph
   )
 
 if (ENABLE_WAFFLE AND NOT WIN32)
-    add_subdirectory(test)
 endif()
+    add_subdirectory(test)
 
 add_subdirectory(ui)
