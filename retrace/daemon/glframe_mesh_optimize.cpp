@@ -61,8 +61,8 @@ class Edge {
 typedef std::vector<Edge> EdgeVec;
 class Triangle {
  public:
-  explicit Triangle(std::vector<uint32_t>::const_iterator i)
-      : a(*i++), b(*i++), c(*i++) {}
+  explicit Triangle(Vertex _a, Vertex _b, Vertex _c)
+      : a(_a), b(_b), c(_c) {}
   void edges(EdgeVec *e) {
     e->push_back(Edge(a, b));
     e->push_back(Edge(b, c));
@@ -70,6 +70,11 @@ class Triangle {
   }
   bool operator==(const Triangle &o) const {
     return a == o.a && b == o.b && c == o.c;
+  }
+  void vertices(std::vector<Vertex> *v) {
+    v->push_back(a);
+    v->push_back(b);
+    v->push_back(c);
   }
 
  private:
@@ -85,16 +90,35 @@ reduce_edge_map(const Edge &e, EdgeMap *edge_map,
   EdgeVec unfollowed_edges;
   Edge current_edge = e;
   while (true) {
-    auto edge_list = edge_map->find(current_edge);
+    const auto edge_list = edge_map->find(current_edge);
+    if (edge_list == edge_map->end()) {
+      if (unfollowed_edges.empty())
+        break;
+      current_edge = unfollowed_edges.back();
+      unfollowed_edges.pop_back();
+      continue;
+    }
     for (auto tri : edge_list->second) {
       triangles->push_back(tri);
       EdgeVec new_edges;
       tri.edges(&new_edges);
       for (auto new_edge : new_edges) {
-        if (new_edge != current_edge)
+        if (new_edge != current_edge) {
+          auto duplicate_entry = edge_map->find(new_edge);
+          if (duplicate_entry != edge_map->end()) {
+            for (auto dup_t = duplicate_entry->second.rbegin();
+                 dup_t != duplicate_entry->second.rend(); ++dup_t) {
+              if (*dup_t == tri) {
+                *dup_t = duplicate_entry->second.back();
+                duplicate_entry->second.pop_back();
+              }
+            }
+          }
           unfollowed_edges.push_back(new_edge);
+        }
       }
     }
+    assert(edge_map->find(edge_list->first) != edge_map->end());
     edge_map->erase(edge_list);
     if (unfollowed_edges.empty())
       break;
@@ -108,11 +132,12 @@ retrace::optimize_mesh(std::vector<uint32_t> *vertices) {
   EdgeMap edge_map;
   auto i = vertices->begin();
   while (i != vertices->end()) {
-    Triangle t(i);
+    Vertex a=*i++, b = *i++, c=*i++;
+    Triangle t(a, b, c);
     std::vector<Edge> edges;
     t.edges(&edges);
     for (const auto &e : edges) {
-      auto tri_list = edge_map[e];
+      auto &tri_list = edge_map[e];
       bool seen = false;
       for (auto known_t : tri_list) {
         if (t == known_t) {
@@ -135,5 +160,8 @@ retrace::optimize_mesh(std::vector<uint32_t> *vertices) {
     }
     reduce_edge_map(f->first, &edge_map, &triangles);
   }
+  vertices->clear();
+  for (auto t : triangles)
+    t.vertices(vertices);
 }
 
