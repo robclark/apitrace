@@ -40,12 +40,11 @@ TEST(MeshTest, Optimize) {
   std::vector<char> line(kMaxLine);
   std::vector<uint32_t> verts;
   while (fgets(line.data(), kMaxLine, fh) != NULL)  {
-    while (true) {
-      char *saveptr;
-      char *pch = strtok_r(line.data(), " \n", &saveptr);
-      if (pch == NULL)
-        break;
+    char *saveptr;
+    char *pch = strtok_r(line.data(), " \n\t", &saveptr);
+    while (pch) {
       verts.push_back(atoi(pch));
+      pch = strtok_r(NULL, " \n\t", &saveptr);
     }
   }
 }
