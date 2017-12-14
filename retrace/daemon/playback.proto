@@ -21,6 +21,7 @@ enum RequestType {
   SET_UNIFORM_REQUEST = 12;
   STATE_REQUEST = 13;
   SET_STATE_REQUEST = 14;
+  OPTIMIZE_VERTS_REQUEST = 15;
 };
 
 message OpenFileRequest {
@@ -226,6 +227,11 @@ message SimpleRequest {
   required bool simple_shader = 2;
 }
 
+message OptimizeVertsRequest {
+  required RenderSelection selection = 1;
+  required bool optimize_vertices = 2;
+}
+
 message StateRequest {
   required RenderSelection selection = 1;
   required uint32 experiment_count = 2;
@@ -267,6 +273,7 @@ message RetraceRequest {
   optional SetUniformRequest set_uniform = 13;
   optional StateRequest state = 14;
   optional SetStateRequest set_state = 15;
+  optional OptimizeVertsRequest optimizeVertices = 16;
 }
 
 message RetraceResponse {

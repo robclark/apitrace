@@ -1246,6 +1246,12 @@ FrameRetraceStub::simpleShader(const RenderSelection &selection,
 }
 
 void
+FrameRetraceStub::optimizeVertices(const RenderSelection &selection,
+                                   bool optimize) {
+  assert(false);
+}
+
+void
 FrameRetraceStub::retraceApi(const RenderSelection &selection,
                              OnFrameRetrace *callback) {
   {

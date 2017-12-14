@@ -343,6 +343,13 @@ FrameRetrace::simpleShader(const RenderSelection &selection, bool simple) {
 }
 
 void
+FrameRetrace::optimizeVertices(const RenderSelection &selection,
+                               bool optimize) {
+  assert(false);
+}
+
+
+void
 FrameRetrace::retraceApi(const RenderSelection &selection,
                          OnFrameRetrace *callback) {
   // reset to beginning of frame

@@ -95,6 +95,8 @@ class FileTransfer : public IFrameRetrace {
                    bool disable) {}
   void simpleShader(const RenderSelection &selection,
                     bool simple) {}
+  void optimizeVertices(const RenderSelection &selection,
+                        bool optimize) {}
   void retraceApi(const RenderSelection &selection,
                   OnFrameRetrace *callback) {}
   void retraceBatch(const RenderSelection &selection,

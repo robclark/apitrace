@@ -347,6 +347,15 @@ FrameRetraceSkeleton::Run() {
           m_frame->simpleShader(selection, simple.simple_shader());
           break;
         }
+      case ApiTrace::OPTIMIZE_VERTS_REQUEST:
+        {
+          assert(request.has_optimizevertices());
+          auto optimize = request.optimizevertices();
+          RenderSelection selection;
+          makeRenderSelection(optimize.selection(), &selection);
+          m_frame->optimizeVertices(selection, optimize.optimize_vertices());
+          break;
+        }
       case ApiTrace::UNIFORM_REQUEST:
         {
           assert(request.has_uniform());
