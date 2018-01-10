@@ -116,6 +116,7 @@ StateOverride::interpret_value(const StateKey &item,
     case GL_FRONT_FACE:
     case GL_POLYGON_OFFSET_FILL:
     case GL_SAMPLE_COVERAGE_INVERT:
+    case GL_SCISSOR_TEST:
       return state_name_to_enum(value);
 
     // float values
@@ -134,6 +135,8 @@ StateOverride::interpret_value(const StateKey &item,
     }
 
     // int values
+    case GL_SCISSOR_BOX:
+      return std::stoi(value);
     default:
       assert(false);
       return 0;
@@ -151,7 +154,8 @@ StateOverride::getState(const StateKey &item,
     case GL_DEPTH_TEST:
     case GL_DITHER:
     case GL_LINE_SMOOTH:
-    case GL_POLYGON_OFFSET_FILL: {
+    case GL_POLYGON_OFFSET_FILL:
+    case GL_SCISSOR_TEST: {
       data->resize(1);
       get_enabled_state(n, data);
       break;
@@ -202,6 +206,11 @@ StateOverride::getState(const StateKey &item,
     case GL_DEPTH_RANGE: {
       data->resize(2);
       get_float_state(n, data);
+      break;
+    }
+    case GL_SCISSOR_BOX: {
+      data->resize(4);
+      get_integer_state(n, data);
       break;
     }
   }
@@ -417,6 +426,10 @@ StateOverride::enact_state(const KeyMap &m) const {
             n == GL_SAMPLE_COVERAGE_INVERT ? i.second[0] : invert);
         break;
       }
+      case GL_SCISSOR_BOX:{
+        // TODO(majanes)
+        break;
+      }
       case GL_INVALID_ENUM:
       default:
         assert(false);
@@ -432,6 +445,14 @@ void floatStrings(const std::vector<uint32_t> &i,
   for (auto d : i) {
     u.i = d;
     s->push_back(std::to_string(u.f));
+  }
+}
+
+void intStrings(const std::vector<uint32_t> &i,
+                  std::vector<std::string> *s) {
+  s->clear();
+  for (auto d : i) {
+    s->push_back(std::to_string(d));
   }
 }
 
@@ -634,5 +655,19 @@ StateOverride::onState(SelectionId selId,
     getState(k, &data);
     callback->onState(selId, experimentCount, renderId,
                       k, {data[0] ? "true" : "false"});
+  }
+  {
+    StateKey k("Fragment/Scissor", "GL_SCISSOR_TEST");
+    getState(k, &data);
+    callback->onState(selId, experimentCount, renderId,
+                      k, {data[0] ? "true" : "false"});
+  }
+  {
+    StateKey k("Fragment/Scissor", "GL_SCISSOR_BOX");
+    getState(k, &data);
+    std::vector<std::string> box;
+    intStrings(data, &box);
+    callback->onState(selId, experimentCount, renderId,
+                      k, box);
   }
 }
