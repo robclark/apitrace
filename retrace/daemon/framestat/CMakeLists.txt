@@ -20,13 +20,15 @@
 
 cmake_minimum_required(VERSION 2.8)
 
+include(../window_system.cmake)
+
 include_directories (
   ../context
   ..
+  ${ws_include}
   )
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
 
 set (FRAMESTAT_SRC
   glframe_loop.cpp
@@ -37,6 +39,7 @@ set (FRAMESTAT_SRC
 
 add_executable(framestat
   ${FRAMESTAT_SRC}
+  ${glws_os}
 )
 
 if (WIN32)
@@ -54,7 +57,7 @@ target_link_libraries(framestat
   glhelpers
   glproc_gl
   ${GL_LIB}
-  ${X11_X11_LIB}
+  ${ws_lib}
   ${THREAD_LIB}
 )
 

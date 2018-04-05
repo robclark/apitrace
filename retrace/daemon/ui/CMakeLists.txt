@@ -1,8 +1,11 @@
 cmake_minimum_required(VERSION 2.8)
 
+include(../window_system.cmake)
+
 include_directories (
   ${CMAKE_SOURCE_DIR}/retrace/daemon
   ${CMAKE_SOURCE_DIR}/retrace/daemon/bargraph
+  ${ws_include}
   )
 
 find_package(Qt5Widgets REQUIRED) 
@@ -49,6 +52,7 @@ add_executable(frameretrace
   ${UI_SRC}
   ${UIS_HDRS}
   ${RESOURCE_ADDED} 
+  ${glws_os}
 )
 
 if (WIN32)
@@ -68,7 +72,7 @@ target_link_libraries(frameretrace
   Qt5::Core Qt5::Gui Qt5::Concurrent Qt5::Quick Qt5::Widgets
   libprotobuf
   ${GL_LIB}
-  ${X11_X11_LIB}
+  ${ws_lib}
   ${THREAD_LIB}
 )
 

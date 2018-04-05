@@ -61,8 +61,6 @@ add_library (retrace_common STATIC
     state_writer_ubjson.cpp
     ws.cpp
     ${ws_os}
-    #TODO(majanes) seems wrong to link this here
-    ${glws_os}
 )
 target_link_libraries (retrace_common
     image
@@ -70,7 +68,6 @@ target_link_libraries (retrace_common
     ${ZLIB_LIBRARIES}
     ${SNAPPY_LIBRARIES}
     ${GETOPT_LIBRARIES}
-    ${X11_X11_LIB}
 )
 if (NOT ANDROID AND CMAKE_SYSTEM_NAME STREQUAL "Linux")
     target_link_libraries (retrace_common rt)
@@ -117,7 +114,8 @@ if (WIN32 OR APPLE OR X11_FOUND)
     add_executable (glretrace
         glretrace_main.cpp
         retrace_main.cpp
-    )
+        ${glws_os}
+        )
 
     add_dependencies (glretrace glproc)
 

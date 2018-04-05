@@ -1,9 +1,12 @@
 INCLUDE (FindPkgConfig)
 
+include(../window_system.cmake)
+
 include_directories (
   ${CMAKE_SOURCE_DIR}/retrace/daemon
   ${CMAKE_SOURCE_DIR}/retrace/daemon/bargraph/test
   ${CMAKE_SOURCE_DIR}/thirdparty/md5
+  ${ws_include}
   )
 
 if (NOT WIN32)
@@ -24,6 +27,7 @@ set (DAEMON_TEST_SRC
 
 add_executable(retrace_daemon_test
   ${DAEMON_TEST_SRC}
+  ${glws_os}
   )
 
 ADD_DEFINITIONS(-DCMAKE_CURRENT_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}")
@@ -37,8 +41,7 @@ else()
 pkg_check_modules(Waffle REQUIRED waffle-1)
 set (DAEMON_TEST_OS_LIBS
   retrace_ui_test_utilities
-  waffle-1
-  ${X11_X11_LIB}
+  ${ws_lib}
   GL
   dl
   )

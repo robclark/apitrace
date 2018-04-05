@@ -1,7 +1,11 @@
 cmake_minimum_required(VERSION 2.8)
 
+include(../window_system.cmake)
+
 include_directories (
+  ${CMAKE_SOURCE_DIR}/retrace
   ${CMAKE_SOURCE_DIR}/retrace/daemon
+  ${ws_include}
   )
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -12,6 +16,8 @@ set (SERVER_SRC
   )
 
 add_executable(frameretrace_server
+  ../glretrace_globals.cpp
+  ${glws_os}
   ${SERVER_SRC}
 )
 
@@ -30,7 +36,7 @@ target_link_libraries(frameretrace_server
   glproc_gl
   libprotobuf
   ${GL_LIB}
-  ${X11_X11_LIB}
+  ${ws_lib}
   ${THREAD_LIB}
 )
 
