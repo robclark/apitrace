@@ -202,6 +202,7 @@ StateTrack::trackShaderSource(const Call &call) {
 
 void
 StateTrack::trackLinkProgram(const trace::Call &call) {
+  current_program = getRetracedProgram(call.args[0].value->toDouble());
 }
 
 void
